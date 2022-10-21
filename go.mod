@@ -1,4 +1,4 @@
-module Proto/message.pb
+module github.com/bluelf45/Proto
 
 go 1.13
 
