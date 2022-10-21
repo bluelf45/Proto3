@@ -1,4 +1,4 @@
-module github.com/Kendovvul/Ejemplo
+module github.com/bluelf45/Proto
 
 go 1.18
 
