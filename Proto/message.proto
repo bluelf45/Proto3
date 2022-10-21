@@ -2,7 +2,7 @@ syntax = "proto3";
 package main;
 
 message Message {
-    string Type = 1;
+    string Tipo = 1;
     int32 Id = 2;
     string Data = 3;
 }
