@@ -7,7 +7,7 @@ enum Tipo{
     Fallo = 3;
 }
 message Message {
-    Tipo Tipo = 1;
+    Tipo Type = 1;
     int32 Id = 2;
     string Data = 3;
 }
