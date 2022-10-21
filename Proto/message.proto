@@ -1,13 +1,8 @@
 syntax = "proto3";
 package main;
-enum Tipo{
-    Logistico = 0;
-    Financiero = 1;
-    Militar = 2;
-    Fallo = 3;
-}
+
 message Message {
-    Tipo Type = 1;
+    string Type = 1;
     int32 Id = 2;
     string Data = 3;
 }
