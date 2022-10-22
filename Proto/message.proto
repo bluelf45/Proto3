@@ -9,9 +9,9 @@ service MessageService {
 }
 
 message Message {
-    string Categoria = 1;
-    int32 Id = 2;
-    string Data = 3;
+    int32 Id = 1;
+    string Data = 2;
+    string Categoria = 3;
 }
 message Reply {
     bool Reply = 1;
