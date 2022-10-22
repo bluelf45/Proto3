@@ -1,8 +1,15 @@
 syntax = "proto3";
 package main;
 option go_package = ".";
+
+service MessageService {
+    rpc Upload (Message) returns (Reply);
+    rpc Download (Request) returns (Message);
+    rpc DataRequest (RequestNN) returns (Message);
+}
+
 message Message {
-    string Category = 1;
+    string Categoria = 1;
     int32 Id = 2;
     string Data = 3;
 }
@@ -14,10 +21,4 @@ message Request{
 }
 message RequestNN{
     int32 Id = 1;
-}
-
-service MessageService {
-    rpc Upload (Message) returns (Reply);
-    rpc Download (Request) returns (Message);
-    rpc DataRequest (RequestNN) returns (Message);
 }
