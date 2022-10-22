@@ -1,6 +1,6 @@
 syntax = "proto3";
 package main;
-
+option go_package = ".";
 message Message {
     string Category = 1;
     int32 Id = 2;
@@ -10,11 +10,7 @@ message Reply {
     bool Reply = 1;
 }
 message Request{
-    enum Category{
-        Logistico = 0;
-        Financiero = 1;
-        Militar = 2;
-    }
+    string Category = 1;
 }
 message RequestNN{
     int32 Id = 1;
