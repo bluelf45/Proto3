@@ -15,7 +15,6 @@ service MessageService {
     //Servidores
     //Consistencia Eventual
 }
-
 message Base{
     string SectorName = 1;
     string BaseName = 2;
