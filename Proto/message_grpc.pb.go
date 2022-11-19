@@ -18,14 +18,98 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// MessageServiceClient is the client API for MessageService service.
+// ServiceGuardianClient is the client API for ServiceGuardian service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MessageServiceClient interface {
+type ServiceGuardianClient interface {
 	//Guardianes
 	GetSoldados(ctx context.Context, in *SoldierRequest, opts ...grpc.CallOption) (*SoldierAnswer, error)
-	//broker
-	Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error)
+}
+
+type serviceGuardianClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewServiceGuardianClient(cc grpc.ClientConnInterface) ServiceGuardianClient {
+	return &serviceGuardianClient{cc}
+}
+
+func (c *serviceGuardianClient) GetSoldados(ctx context.Context, in *SoldierRequest, opts ...grpc.CallOption) (*SoldierAnswer, error) {
+	out := new(SoldierAnswer)
+	err := c.cc.Invoke(ctx, "/main.ServiceGuardian/GetSoldados", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ServiceGuardianServer is the server API for ServiceGuardian service.
+// All implementations must embed UnimplementedServiceGuardianServer
+// for forward compatibility
+type ServiceGuardianServer interface {
+	//Guardianes
+	GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error)
+	mustEmbedUnimplementedServiceGuardianServer()
+}
+
+// UnimplementedServiceGuardianServer must be embedded to have forward compatible implementations.
+type UnimplementedServiceGuardianServer struct {
+}
+
+func (UnimplementedServiceGuardianServer) GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSoldados not implemented")
+}
+func (UnimplementedServiceGuardianServer) mustEmbedUnimplementedServiceGuardianServer() {}
+
+// UnsafeServiceGuardianServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ServiceGuardianServer will
+// result in compilation errors.
+type UnsafeServiceGuardianServer interface {
+	mustEmbedUnimplementedServiceGuardianServer()
+}
+
+func RegisterServiceGuardianServer(s grpc.ServiceRegistrar, srv ServiceGuardianServer) {
+	s.RegisterService(&ServiceGuardian_ServiceDesc, srv)
+}
+
+func _ServiceGuardian_GetSoldados_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SoldierRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceGuardianServer).GetSoldados(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.ServiceGuardian/GetSoldados",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceGuardianServer).GetSoldados(ctx, req.(*SoldierRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ServiceGuardian_ServiceDesc is the grpc.ServiceDesc for ServiceGuardian service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ServiceGuardian_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "main.ServiceGuardian",
+	HandlerType: (*ServiceGuardianServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetSoldados",
+			Handler:    _ServiceGuardian_GetSoldados_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "Proto/message.proto",
+}
+
+// ServiceVanguardiaClient is the client API for ServiceVanguardia service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ServiceVanguardiaClient interface {
 	//Vanguardia
 	AddBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error)
 	RenameBase(ctx context.Context, in *Rename, opts ...grpc.CallOption) (*VectorClock, error)
@@ -33,257 +117,271 @@ type MessageServiceClient interface {
 	DeleteBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error)
 }
 
-type messageServiceClient struct {
+type serviceVanguardiaClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewMessageServiceClient(cc grpc.ClientConnInterface) MessageServiceClient {
-	return &messageServiceClient{cc}
+func NewServiceVanguardiaClient(cc grpc.ClientConnInterface) ServiceVanguardiaClient {
+	return &serviceVanguardiaClient{cc}
 }
 
-func (c *messageServiceClient) GetSoldados(ctx context.Context, in *SoldierRequest, opts ...grpc.CallOption) (*SoldierAnswer, error) {
-	out := new(SoldierAnswer)
-	err := c.cc.Invoke(ctx, "/main.MessageService/GetSoldados", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *messageServiceClient) Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error) {
-	out := new(Address)
-	err := c.cc.Invoke(ctx, "/main.MessageService/Redirect", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *messageServiceClient) AddBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+func (c *serviceVanguardiaClient) AddBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
 	out := new(VectorClock)
-	err := c.cc.Invoke(ctx, "/main.MessageService/AddBase", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/main.ServiceVanguardia/AddBase", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) RenameBase(ctx context.Context, in *Rename, opts ...grpc.CallOption) (*VectorClock, error) {
+func (c *serviceVanguardiaClient) RenameBase(ctx context.Context, in *Rename, opts ...grpc.CallOption) (*VectorClock, error) {
 	out := new(VectorClock)
-	err := c.cc.Invoke(ctx, "/main.MessageService/RenameBase", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/main.ServiceVanguardia/RenameBase", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) UpdateValue(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+func (c *serviceVanguardiaClient) UpdateValue(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
 	out := new(VectorClock)
-	err := c.cc.Invoke(ctx, "/main.MessageService/UpdateValue", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/main.ServiceVanguardia/UpdateValue", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *messageServiceClient) DeleteBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
+func (c *serviceVanguardiaClient) DeleteBase(ctx context.Context, in *Base, opts ...grpc.CallOption) (*VectorClock, error) {
 	out := new(VectorClock)
-	err := c.cc.Invoke(ctx, "/main.MessageService/DeleteBase", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/main.ServiceVanguardia/DeleteBase", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// MessageServiceServer is the server API for MessageService service.
-// All implementations must embed UnimplementedMessageServiceServer
+// ServiceVanguardiaServer is the server API for ServiceVanguardia service.
+// All implementations must embed UnimplementedServiceVanguardiaServer
 // for forward compatibility
-type MessageServiceServer interface {
-	//Guardianes
-	GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error)
-	//broker
-	Redirect(context.Context, *Address) (*Address, error)
+type ServiceVanguardiaServer interface {
 	//Vanguardia
 	AddBase(context.Context, *Base) (*VectorClock, error)
 	RenameBase(context.Context, *Rename) (*VectorClock, error)
 	UpdateValue(context.Context, *Base) (*VectorClock, error)
 	DeleteBase(context.Context, *Base) (*VectorClock, error)
-	mustEmbedUnimplementedMessageServiceServer()
+	mustEmbedUnimplementedServiceVanguardiaServer()
 }
 
-// UnimplementedMessageServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedMessageServiceServer struct {
+// UnimplementedServiceVanguardiaServer must be embedded to have forward compatible implementations.
+type UnimplementedServiceVanguardiaServer struct {
 }
 
-func (UnimplementedMessageServiceServer) GetSoldados(context.Context, *SoldierRequest) (*SoldierAnswer, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSoldados not implemented")
-}
-func (UnimplementedMessageServiceServer) Redirect(context.Context, *Address) (*Address, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Redirect not implemented")
-}
-func (UnimplementedMessageServiceServer) AddBase(context.Context, *Base) (*VectorClock, error) {
+func (UnimplementedServiceVanguardiaServer) AddBase(context.Context, *Base) (*VectorClock, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddBase not implemented")
 }
-func (UnimplementedMessageServiceServer) RenameBase(context.Context, *Rename) (*VectorClock, error) {
+func (UnimplementedServiceVanguardiaServer) RenameBase(context.Context, *Rename) (*VectorClock, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RenameBase not implemented")
 }
-func (UnimplementedMessageServiceServer) UpdateValue(context.Context, *Base) (*VectorClock, error) {
+func (UnimplementedServiceVanguardiaServer) UpdateValue(context.Context, *Base) (*VectorClock, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateValue not implemented")
 }
-func (UnimplementedMessageServiceServer) DeleteBase(context.Context, *Base) (*VectorClock, error) {
+func (UnimplementedServiceVanguardiaServer) DeleteBase(context.Context, *Base) (*VectorClock, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteBase not implemented")
 }
-func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
+func (UnimplementedServiceVanguardiaServer) mustEmbedUnimplementedServiceVanguardiaServer() {}
 
-// UnsafeMessageServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MessageServiceServer will
+// UnsafeServiceVanguardiaServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ServiceVanguardiaServer will
 // result in compilation errors.
-type UnsafeMessageServiceServer interface {
-	mustEmbedUnimplementedMessageServiceServer()
+type UnsafeServiceVanguardiaServer interface {
+	mustEmbedUnimplementedServiceVanguardiaServer()
 }
 
-func RegisterMessageServiceServer(s grpc.ServiceRegistrar, srv MessageServiceServer) {
-	s.RegisterService(&MessageService_ServiceDesc, srv)
+func RegisterServiceVanguardiaServer(s grpc.ServiceRegistrar, srv ServiceVanguardiaServer) {
+	s.RegisterService(&ServiceVanguardia_ServiceDesc, srv)
 }
 
-func _MessageService_GetSoldados_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SoldierRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessageServiceServer).GetSoldados(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/main.MessageService/GetSoldados",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).GetSoldados(ctx, req.(*SoldierRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MessageService_Redirect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Address)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessageServiceServer).Redirect(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/main.MessageService/Redirect",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).Redirect(ctx, req.(*Address))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MessageService_AddBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ServiceVanguardia_AddBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Base)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).AddBase(ctx, in)
+		return srv.(ServiceVanguardiaServer).AddBase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/AddBase",
+		FullMethod: "/main.ServiceVanguardia/AddBase",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).AddBase(ctx, req.(*Base))
+		return srv.(ServiceVanguardiaServer).AddBase(ctx, req.(*Base))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_RenameBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ServiceVanguardia_RenameBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Rename)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).RenameBase(ctx, in)
+		return srv.(ServiceVanguardiaServer).RenameBase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/RenameBase",
+		FullMethod: "/main.ServiceVanguardia/RenameBase",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).RenameBase(ctx, req.(*Rename))
+		return srv.(ServiceVanguardiaServer).RenameBase(ctx, req.(*Rename))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_UpdateValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ServiceVanguardia_UpdateValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Base)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).UpdateValue(ctx, in)
+		return srv.(ServiceVanguardiaServer).UpdateValue(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/UpdateValue",
+		FullMethod: "/main.ServiceVanguardia/UpdateValue",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).UpdateValue(ctx, req.(*Base))
+		return srv.(ServiceVanguardiaServer).UpdateValue(ctx, req.(*Base))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _MessageService_DeleteBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ServiceVanguardia_DeleteBase_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Base)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MessageServiceServer).DeleteBase(ctx, in)
+		return srv.(ServiceVanguardiaServer).DeleteBase(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.MessageService/DeleteBase",
+		FullMethod: "/main.ServiceVanguardia/DeleteBase",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessageServiceServer).DeleteBase(ctx, req.(*Base))
+		return srv.(ServiceVanguardiaServer).DeleteBase(ctx, req.(*Base))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
+// ServiceVanguardia_ServiceDesc is the grpc.ServiceDesc for ServiceVanguardia service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var MessageService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "main.MessageService",
-	HandlerType: (*MessageServiceServer)(nil),
+var ServiceVanguardia_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "main.ServiceVanguardia",
+	HandlerType: (*ServiceVanguardiaServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetSoldados",
-			Handler:    _MessageService_GetSoldados_Handler,
-		},
-		{
-			MethodName: "Redirect",
-			Handler:    _MessageService_Redirect_Handler,
-		},
-		{
 			MethodName: "AddBase",
-			Handler:    _MessageService_AddBase_Handler,
+			Handler:    _ServiceVanguardia_AddBase_Handler,
 		},
 		{
 			MethodName: "RenameBase",
-			Handler:    _MessageService_RenameBase_Handler,
+			Handler:    _ServiceVanguardia_RenameBase_Handler,
 		},
 		{
 			MethodName: "UpdateValue",
-			Handler:    _MessageService_UpdateValue_Handler,
+			Handler:    _ServiceVanguardia_UpdateValue_Handler,
 		},
 		{
 			MethodName: "DeleteBase",
-			Handler:    _MessageService_DeleteBase_Handler,
+			Handler:    _ServiceVanguardia_DeleteBase_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "Proto/message.proto",
+}
+
+// ServiceBrokerClient is the client API for ServiceBroker service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ServiceBrokerClient interface {
+	Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error)
+}
+
+type serviceBrokerClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewServiceBrokerClient(cc grpc.ClientConnInterface) ServiceBrokerClient {
+	return &serviceBrokerClient{cc}
+}
+
+func (c *serviceBrokerClient) Redirect(ctx context.Context, in *Address, opts ...grpc.CallOption) (*Address, error) {
+	out := new(Address)
+	err := c.cc.Invoke(ctx, "/main.ServiceBroker/Redirect", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ServiceBrokerServer is the server API for ServiceBroker service.
+// All implementations must embed UnimplementedServiceBrokerServer
+// for forward compatibility
+type ServiceBrokerServer interface {
+	Redirect(context.Context, *Address) (*Address, error)
+	mustEmbedUnimplementedServiceBrokerServer()
+}
+
+// UnimplementedServiceBrokerServer must be embedded to have forward compatible implementations.
+type UnimplementedServiceBrokerServer struct {
+}
+
+func (UnimplementedServiceBrokerServer) Redirect(context.Context, *Address) (*Address, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Redirect not implemented")
+}
+func (UnimplementedServiceBrokerServer) mustEmbedUnimplementedServiceBrokerServer() {}
+
+// UnsafeServiceBrokerServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ServiceBrokerServer will
+// result in compilation errors.
+type UnsafeServiceBrokerServer interface {
+	mustEmbedUnimplementedServiceBrokerServer()
+}
+
+func RegisterServiceBrokerServer(s grpc.ServiceRegistrar, srv ServiceBrokerServer) {
+	s.RegisterService(&ServiceBroker_ServiceDesc, srv)
+}
+
+func _ServiceBroker_Redirect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Address)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceBrokerServer).Redirect(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.ServiceBroker/Redirect",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceBrokerServer).Redirect(ctx, req.(*Address))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ServiceBroker_ServiceDesc is the grpc.ServiceDesc for ServiceBroker service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ServiceBroker_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "main.ServiceBroker",
+	HandlerType: (*ServiceBrokerServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Redirect",
+			Handler:    _ServiceBroker_Redirect_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

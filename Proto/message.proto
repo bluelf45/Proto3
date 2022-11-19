@@ -2,19 +2,23 @@ syntax = "proto3";
 package main;
 option go_package = "./";
 
-service MessageService {
+service ServiceGuardian{
     //Guardianes
     rpc GetSoldados (SoldierRequest) returns (SoldierAnswer);
-    //broker
-    rpc Redirect (Address) returns (Address);
+    //Servidores
+    //Consistencia Eventual
+}
+service ServiceVanguardia{
     //Vanguardia
     rpc AddBase (Base) returns (VectorClock);
     rpc RenameBase (Rename) returns (VectorClock);
     rpc UpdateValue (Base) returns (VectorClock);
     rpc DeleteBase (Base) returns (VectorClock);
-    //Servidores
-    //Consistencia Eventual
 }
+service ServiceBroker{
+    rpc Redirect (Address) returns (Address);
+}
+
 message Base{
     string SectorName = 1;
     string BaseName = 2;
